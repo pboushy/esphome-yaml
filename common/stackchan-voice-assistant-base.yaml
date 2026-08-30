@@ -56,7 +56,7 @@ substitutions:
   # `*_angle_offset` is in degrees (mapped to steps via the servo's 0..360°
   # → 0..1024 step range). `*_position_to_angle` is the inverse formula used
   # to translate the servo's reported position back into degrees.
-  # note, you can override the result with 'Servo Calibration' button  
+  # note, you can override the result with 'Servo Calibration' button
   servo_x_angle_offset: "164"
   servo_x_position_to_angle: "(x - 34.0f) * 0.3710f - 164.0f"
   servo_y_angle_offset: "50"
@@ -99,7 +99,7 @@ esphome:
               id(servo_y_angle)->set_angle_offset(static_cast<int>(y_offset));
             } else {
               ESP_LOGD("boot", "No calibration data, using defaults.");
-            }              
+            }
 
 esp32:
   variant: esp32s3
@@ -136,7 +136,7 @@ wifi:
   on_connect:
     - script.execute: draw_display
   on_disconnect:
-    - script.execute: draw_display      
+    - script.execute: draw_display
 
 network:
   enable_high_performance: true
@@ -167,7 +167,7 @@ globals:
   - id: y_servo_zero_step
     type: int
     restore_value: yes
-    initial_value: ${servo_y_angle_offset}    
+    initial_value: ${servo_y_angle_offset}
 
 i2c:
   - id: bsp_bus
@@ -195,7 +195,7 @@ external_components:
   - source: github://n-IA-hane/esphome-intercom@v3.1.0
     components: [i2s_audio_duplex, esp_aec]
     refresh: 1h
-    
+
 # PMU
 axp2101:
   id: axp2101_pmu
@@ -223,11 +223,11 @@ output:
   - platform: axp2101
     channel: ALDO2
     voltage: 3300
-  
+
   - platform: axp2101
     channel: BLDO1
     voltage: 2800
-  
+
   - platform: axp2101
     channel: BLDO2
     voltage: 1500
@@ -283,7 +283,7 @@ ftservo:
     id: x_servo
   - platform: scs9009
     address: 2
-    id: y_servo 
+    id: y_servo
 
 number:
   - platform: ftservo
@@ -342,7 +342,7 @@ button:
       - lambda: |-
           ESP_LOGD("ftservo", "Preferences sync requested");
           global_preferences->sync(); // sync at once
-          ESP_LOGD("ftservo", "Done reading and saving zero position, X zero: %d, Y zero %d", 
+          ESP_LOGD("ftservo", "Done reading and saving zero position, X zero: %d, Y zero %d",
                   id(x_servo_zero_step), id(y_servo_zero_step));
 
   - platform: template
@@ -368,7 +368,7 @@ sensor:
         - delta: 1.0
     battery_charging:
       name: "Battery Charging"
-    
+
   - platform: ftservo
     id: x_servo_sensor
     ftservo_id: x_servo
@@ -381,7 +381,7 @@ sensor:
         - lambda: |-
             if ( !id(use_calib_value) ) {
               float val = ${servo_x_position_to_angle};
-              id(servo_x_angle).publish_state(roundf(val)); 
+              id(servo_x_angle).publish_state(roundf(val));
             } else {
               float x = id(servo_x_position).state;
               float zero = static_cast<float>(id(x_servo_zero_step));
@@ -402,7 +402,7 @@ sensor:
         - lambda: |-
             if ( !id(use_calib_value) ) {
               float val = ${servo_y_position_to_angle};
-              id(servo_y_angle).publish_state(roundf(val)); // using angle 
+              id(servo_y_angle).publish_state(roundf(val)); // using angle
             } else {
               float x = id(servo_y_position).state;
               float zero = static_cast<float>(id(y_servo_zero_step));
@@ -419,7 +419,7 @@ text_sensor:
 
   - platform: si12t
     name: "Touch Sensor 2"
-    channel: CH_2    
+    channel: CH_2
     update_interval: 1s
 
   - platform: si12t
@@ -719,7 +719,7 @@ voice_assistant:
     - micro_wake_word.start:
 
   on_client_disconnected:
-    - lambda: id(voice_assistant_phase) = ${voice_assist_not_ready_phase_id}; 
+    - lambda: id(voice_assistant_phase) = ${voice_assist_not_ready_phase_id};
     - script.execute: draw_display
     - voice_assistant.stop:
 
@@ -776,7 +776,7 @@ switch:
       aw9523b_id: aw9523b_hub
       number: 2
     internal: true
-    restore_mode: RESTORE_DEFAULT_ON    
+    restore_mode: RESTORE_DEFAULT_ON
 
   - platform: template
     name: Microphone Mute
@@ -788,7 +788,7 @@ switch:
             id: mic_wake_word
         - lambda: id(voice_assistant_phase) = ${voice_assist_idle_phase_id};
         - script.execute: draw_display
-        
+
     on_turn_on:
         - microphone.mute:
             id: mic_wake_word
@@ -937,7 +937,7 @@ touchscreen:
     on_touch:
       - lambda: |-
           ESP_LOGD("cal", "x=%d, y=%d, x_raw=%d, y_raw=%0d",
-                          touch.x, touch.y, touch.x_raw, touch.y_raw);  
+                          touch.x, touch.y, touch.x_raw, touch.y_raw);
 
 script:
   - id: draw_display
@@ -1065,7 +1065,7 @@ image:
     transparency: alpha_channel
   - file: ${muted_illustration_file}
     id: stackchan_muted
-    resize: 320x240    
+    resize: 320x240
     type: RGB
     transparency: alpha_channel
 
